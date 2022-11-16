@@ -4,6 +4,8 @@ import StateDistrict from '../API/StateDistrict';
 
 const SearchBlood = () => {
   const [district, setDistrict] = useState([]);
+  const [status, setStatus] = useState(false);
+  const [bloodBankCamp, setBloodBankCamp] = useState([]);
 
   const updateDistrict = (e) => {
     e.preventDefault();
@@ -11,9 +13,52 @@ const SearchBlood = () => {
     setDistrict([...state[0].districts]);
   }
 
-  const renderDistrict = district.map((elem,index) => {
-    return <><option key={index} value={elem}>{elem.toUpperCase()}</option></>
+  const renderDistrict = district.map((elem, index) => {
+    return <React.Fragment key={Number(index)} ><option value={elem}>{elem.toUpperCase()}</option></React.Fragment>
   });
+
+  const handelSearch = async (e) => {
+    try {
+      e.preventDefault(e);
+      const res = await fetch('search/blood-camp', {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const result = await res.json();
+
+      if (result.status) {
+        setStatus(true);
+        setBloodBankCamp(...bloodBankCamp, result.result);
+      } else {
+        setBloodBankCamp(...bloodBankCamp, []);
+        setStatus(false);
+      }
+
+    } catch (err) {
+      console.log(err);
+    }
+
+  }
+
+  const BloodInfo = () => {
+    const info = bloodBankCamp.map((e, i) => {
+      return (
+        <div key={i} className="result-information">
+          <div className="head-sr-no">{i + 1}</div>
+          <div className="head-blood-bank">{e.campName}</div>
+          <div className="head-address">{e.address}</div>
+          <div className="head-contact-us">{e.email} | {e.phone}</div>
+          <div className="head-organizerName">{e.organizerName}</div>
+        </div>
+      )
+    });
+
+    console.log(info);
+
+    return info
+  }
 
 
   return (
@@ -21,14 +66,14 @@ const SearchBlood = () => {
       <div className="content-search">
         <div className="information-form">
           <div className="search-header">
-            <h2>Search Blood</h2>
+            <h2>Search Blood Camps</h2>
           </div>
           <div className="search-form">
-            <form action="" method="post">
+            <form method="get">
               <div className="form-group">
                 <div className="form-field">
                   <label htmlFor="state">State</label>
-                  <select name="state" id="state" onChange={(e)=> {updateDistrict(e)}} required>
+                  <select name="state" id="state" onChange={(e) => { updateDistrict(e) }} required>
                     <option value="">--Select State--</option>
                     <State />
                   </select>
@@ -45,7 +90,7 @@ const SearchBlood = () => {
                   <input type="date" name="date" id="date" />
                 </div>
                 <div className="form-field">
-                  <input type="submit" value="Search" />
+                  <input type="submit" value="Search" onClick={handelSearch}/>
                 </div>
               </div>
             </form>
@@ -56,7 +101,23 @@ const SearchBlood = () => {
             <h2>Showing Information</h2>
           </div>
           <div className="result">
+            <div className="result-content">
+              <div className="result-header">
+                <div className="head-sr-no">S.No.</div>
+                <div className="head-blood-bank-camp">Camp Name</div>
+                <div className="head-address">Address</div>
+                <div className="head-contact-us">Contact Us</div>
+                <div className="head-organizerName">Organizer Name</div>
+              </div>
+              {status ?
 
+                <BloodInfo />
+
+
+                :
+                <div className="no-result"></div>
+              }
+            </div>
           </div>
         </div>
       </div>

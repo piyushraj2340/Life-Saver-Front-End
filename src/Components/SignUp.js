@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom';
 import FormHeader from './Shared/FormHeader';
 import State from './Shared/State'
@@ -18,7 +18,38 @@ const SignUp = () => {
     district: ""
   });
 
+  const [verifyAuth, setVerifyAuth] = useState(false);
   const [district, setDistrict] = useState([]);
+
+  const handleVerification = async () => {
+    try {
+        const res = await fetch('/auth', {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+            },
+            credentials: "include"
+        });
+        const result = await res.json();
+
+        if(result.status) {
+            setVerifyAuth(true);
+            console.log("authentication successfully");
+            navigate('/profile')
+        } else {
+            setVerifyAuth(false);
+            console.log("authentication failed");
+        }
+        
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+useEffect(() => {
+    handleVerification();
+},[]);
 
   const updateDistrict = (e) => {
     e.preventDefault();

@@ -1,9 +1,45 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import FormHeader from './Shared/FormHeader';
 import { Link, useNavigate } from 'react-router-dom';
 
+import { UserContext } from '../App';
+
 const Login = () => {
+
+    const {state, dispatch} = useContext(UserContext);
+
     const navigate = useNavigate();
+    const [verifyAuth, setVerifyAuth] = useState(false);
+
+    const handleVerification = async () => {
+        try {
+            const res = await fetch('/auth', {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
+                },
+                credentials: "include"
+            });
+            const result = await res.json();
+
+            if(result.status) {
+                setVerifyAuth(true);
+                console.log("authentication successfully");
+                navigate('/profile')
+            } else {
+                setVerifyAuth(false);
+                console.log("authentication failed");
+            }
+            
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    useEffect(() => {
+        handleVerification();
+    },[]);
 
     const loginUser = async (e) => {
         e.preventDefault(e);
@@ -22,6 +58,7 @@ const Login = () => {
             window.alert("Login Successful!...");
             console.log("Login Successful!...");
 
+            dispatch({type:"USER", payload:true});
             navigate('/profile');
 
         } else {

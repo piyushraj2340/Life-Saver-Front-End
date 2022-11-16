@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 
 const Profile = () => {
@@ -7,8 +7,6 @@ const Profile = () => {
         name: "",
         phone: "",
         email: "",
-        originalPassword: "",
-        confirmPassword: "",
         dateOfBirth: "",
         gender: "",
         state: "",
@@ -35,6 +33,16 @@ const Profile = () => {
             if (!result.status) {
                 const error = new Error("auth failed");
                 throw error;
+            } else {
+                setUser({
+                    name: result.result.name,
+                    phone: result.result.phone,
+                    email: result.result.email,
+                    dateOfBirth: result.result.dateOfBirth,
+                    gender: result.result.gender,
+                    state: result.result.state,
+                    district: result.result.district,
+                });
             }
 
         } catch (err) {
@@ -57,7 +65,7 @@ const Profile = () => {
                             <img src="https://www.pngfind.com/pngs/m/676-6764065_default-profile-picture-transparent-hd-png-download.png" className="profile-dp" id="profile-dp" alt="profile-dp" />
                         </div>
                         <div className="content-profile-name">
-                            <span className="profile-name" id="profile-name">Piyush Raj</span>
+                            <span className="profile-name" id="profile-name">{user.name}</span>
                         </div>
                     </div>
                     <div className="about-me">
@@ -72,7 +80,7 @@ const Profile = () => {
                                     </span>
                                 </div>
                                 <div className="content-about-value">
-                                    <span className="title-value-user-name" id="title-value-user-name">piyushraj2340</span>
+                                    <span className="title-value-user-name" id="title-value-user-name">{user.name}</span>
                                 </div>
                             </div>
                             <div className="about-info">
@@ -82,7 +90,7 @@ const Profile = () => {
                                     </span>
                                 </div>
                                 <div className="content-about-value">
-                                    <span className="title-value-email" id="title-value-email">piyushraj240@gmail.com</span>
+                                    <span className="title-value-email" id="title-value-email">{user.email}</span>
                                 </div>
                             </div>
                             <div className="about-info">
@@ -92,7 +100,7 @@ const Profile = () => {
                                     </span>
                                 </div>
                                 <div className="content-about-value">
-                                    <span className="title-value-phone" id="title-value-phone">7363980230</span>
+                                    <span className="title-value-phone" id="title-value-phone">{user.phone}</span>
                                 </div>
                             </div>
                             <div className="about-info">
@@ -102,7 +110,7 @@ const Profile = () => {
                                     </span>
                                 </div>
                                 <div className="content-about-value">
-                                    <span className="title-value-dob" id="title-value-dob">25-08-2000</span>
+                                    <span className="title-value-dob" id="title-value-dob">{user.dateOfBirth}</span>
                                 </div>
                             </div>
                             <div className="about-info">
@@ -112,7 +120,7 @@ const Profile = () => {
                                     </span>
                                 </div>
                                 <div className="content-about-value">
-                                    <span className="title-value-gender" id="title-value-gender">Male</span>
+                                    <span className="title-value-gender" id="title-value-gender">{user.gender}</span>
                                 </div>
                             </div>
                             <div className="about-info">
@@ -122,7 +130,7 @@ const Profile = () => {
                                     </span>
                                 </div>
                                 <div className="content-about-value">
-                                    <span className="title-value-address" id="title-value-address">Aurangabad, Bihar, India.</span>
+                                    <span className="title-value-address" id="title-value-address">{user.district}, {user.state}.</span>
                                 </div>
                             </div>
                         </div>
