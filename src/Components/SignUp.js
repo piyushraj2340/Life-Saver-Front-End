@@ -72,7 +72,7 @@ useEffect(() => {
   const postData = async (e) => {
     e.preventDefault();
 
-    const res = await fetch("/api/user/sign-up", {
+    const res = await fetch("https://life-saver-blood-bank.herokuapp.com/api/user/sign-up", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
